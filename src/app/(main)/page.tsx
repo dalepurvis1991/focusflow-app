@@ -1,5 +1,2 @@
-import { redirect } from 'next/navigation'
-
-export default function MainPage() {
-  redirect('/dashboard')
-}
+// Intentionally empty - root route handled by app/page.tsx
+export {}
