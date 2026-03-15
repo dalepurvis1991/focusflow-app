@@ -1,4 +1,4 @@
-import { AlertCircle, Heart, Zap, Cup } from 'lucide-react'
+import { AlertCircle, Heart, Zap, Coffee } from 'lucide-react'
 import { ReactNode } from 'react'
 
 interface NudgeCardProps {
@@ -22,7 +22,7 @@ export function NudgeCard({
     if (icon) return icon
     switch (type) {
       case 'water':
-        return <Cup size={24} className="text-blue-400" />
+        return <Coffee size={24} className="text-blue-400" />
       case 'break':
         return <AlertCircle size={24} className="text-amber-400" />
       case 'movement':
@@ -39,7 +39,7 @@ export function NudgeCard({
       case 'water':
         return 'bg-blue-500 bg-opacity-10 border-blue-500'
       case 'break':
-        return 'bg-amber-500 bg-opacity-10 border-amber'
+        return 'bg-amber-500 bg-opacity-10 border-amber-500'
       case 'movement':
         return 'bg-green-500 bg-opacity-10 border-green-500'
       case 'breathing':
