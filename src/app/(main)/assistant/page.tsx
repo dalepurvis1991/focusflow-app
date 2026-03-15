@@ -96,10 +96,10 @@ export default function AssistantPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy flex flex-col">
-      <div className="sticky top-0 bg-navy-light border-b border-navy-lighter p-4 z-10">
-        <h1 className="text-xl font-bold text-white">FocusFlow Coach</h1>
-        <p className="text-sm text-gray-400">Always here to listen</p>
+    <div className="min-h-screen bg-[#0b1219] flex flex-col">
+      <div className="sticky top-0 bg-slate-900 border-b border-slate-800 p-4 z-10">
+        <h1 className="text-xl font-bold text-slate-100">FocusFlow Coach</h1>
+        <p className="text-sm text-slate-400">Always here to listen</p>
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
@@ -114,13 +114,13 @@ export default function AssistantPage() {
 
         {isLoading && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 rounded-full bg-purple flex-shrink-0 flex items-center justify-center text-white font-bold text-sm">
+            <div className="w-8 h-8 rounded-full bg-[#136dec] flex-shrink-0 flex items-center justify-center text-white font-bold text-sm">
               FF
             </div>
-            <div className="flex items-center gap-1 px-4 py-3 bg-navy-light rounded-2xl rounded-bl-none">
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse" />
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse animation-delay-100" />
-              <div className="w-2 h-2 bg-gray-400 rounded-full animate-pulse animation-delay-200" />
+            <div className="flex items-center gap-1 px-4 py-3 bg-slate-800 rounded-xl rounded-bl-none">
+              <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse" />
+              <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse animation-delay-100" />
+              <div className="w-2 h-2 bg-slate-500 rounded-full animate-pulse animation-delay-200" />
             </div>
           </div>
         )}
@@ -128,7 +128,7 @@ export default function AssistantPage() {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="fixed bottom-24 left-0 right-0 bg-gradient-to-t from-navy to-transparent pointer-events-none h-12" />
+      <div className="fixed bottom-24 left-0 right-0 bg-gradient-to-t from-[#0b1219] to-transparent pointer-events-none h-12" />
 
       <div className="fixed bottom-24 left-0 right-0 p-4 flex gap-2 max-w-2xl mx-auto">
         <input
@@ -148,11 +148,11 @@ export default function AssistantPage() {
         <button
           onClick={() => handleSendMessage()}
           disabled={!input.trim() || isLoading}
-          className="p-3 rounded-lg bg-purple text-white hover:bg-purple-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors active:scale-95"
+          className="p-3 rounded-lg bg-[#136dec] text-white hover:bg-[#1058c7] disabled:opacity-50 disabled:cursor-not-allowed transition-colors active:scale-95"
         >
           <Send size={20} />
         </button>
-        <button className="p-3 rounded-lg bg-navy-light text-gray-400 hover:text-white transition-colors active:scale-95">
+        <button className="p-3 rounded-lg bg-slate-800 text-slate-400 hover:text-slate-100 transition-colors active:scale-95">
           <Mic size={20} />
         </button>
       </div>

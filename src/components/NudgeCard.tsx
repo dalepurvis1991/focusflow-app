@@ -51,17 +51,17 @@ export function NudgeCard({
 
   return (
     <div
-      className={`p-4 rounded-2xl border-2 ${getBackgroundClass()} animate-slide-up`}
+      className={`p-4 rounded-xl border-2 ${getBackgroundClass()} animate-slide-up`}
     >
       <div className="flex items-start gap-3">
         <div className="flex-shrink-0 mt-1">{getIcon()}</div>
         <div className="flex-1">
           <h3 className="font-semibold text-white text-sm mb-1">{title}</h3>
-          <p className="text-gray-300 text-sm mb-4">{description}</p>
+          <p className="text-slate-300 text-sm mb-4">{description}</p>
           {onAction && (
             <button
               onClick={onAction}
-              className="px-3 py-2 bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg text-xs font-medium transition-colors"
+              className="px-3 py-2 bg-white bg-opacity-10 hover:bg-opacity-20 text-white rounded-lg text-xs font-semibold transition-colors"
             >
               {actionLabel}
             </button>

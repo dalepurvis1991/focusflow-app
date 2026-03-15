@@ -102,16 +102,16 @@ export default function OnboardingPage() {
       description: "Let's set up your ADHD assistant",
       content: (
         <div className="space-y-4">
-          <p className="text-lg leading-relaxed" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-lg leading-relaxed text-slate-400">
             Hi there! I'm FocusFlow, your AI-powered ADHD coach. I'm here to help you manage your day, remember what matters, and take care of yourself.
           </p>
-          <p className="text-base" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-base text-slate-400">
             Let's start by learning a bit about you. This should take about 2 minutes.
           </p>
           <div className="pt-4">
-            <div className="inline-block px-6 py-3 rounded-xl border" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', borderColor: 'var(--primary)' }}>
-              <p className="font-semibold" style={{ color: 'var(--primary)' }}>✨ No pressure here</p>
-              <p className="text-sm mt-1" style={{ color: 'var(--text-secondary)' }}>You can always change these settings later</p>
+            <div className="inline-block px-6 py-3 rounded-xl border bg-[#136dec]/10 border-[#136dec]">
+              <p className="font-semibold text-[#136dec]">✨ No pressure here</p>
+              <p className="text-sm mt-1 text-slate-400">You can always change these settings later</p>
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default function OnboardingPage() {
             autoFocus
           />
           <div>
-            <label className="block text-sm mb-3" style={{ color: 'var(--text-secondary)' }}>Age</label>
+            <label className="block text-sm mb-3 text-slate-400">Age</label>
             <input
               type="number"
               placeholder="e.g., 28"
@@ -155,7 +155,7 @@ export default function OnboardingPage() {
       content: (
         <div className="space-y-4">
           <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+            <label className="block text-sm mb-2 text-slate-400">
               What time do you wake up?
             </label>
             <input
@@ -168,7 +168,7 @@ export default function OnboardingPage() {
             />
           </div>
           <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+            <label className="block text-sm mb-2 text-slate-400">
               Work or school starts at?
             </label>
             <input
@@ -181,7 +181,7 @@ export default function OnboardingPage() {
             />
           </div>
           <div>
-            <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+            <label className="block text-sm mb-2 text-slate-400">
               Work or school ends at?
             </label>
             <input
@@ -201,13 +201,7 @@ export default function OnboardingPage() {
       description: 'Optional, but helpful for reminders',
       content: (
         <div className="space-y-4">
-          <label className="flex items-center gap-3 cursor-pointer p-4 rounded-lg transition-colors" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--surface)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--bg)'
-            }}>
+          <label className="flex items-center gap-3 cursor-pointer p-4 rounded-lg transition-colors bg-[#0b1219] border border-slate-800 hover:bg-slate-800">
             <input
               type="checkbox"
               checked={formData.takesAdhgMeds}
@@ -216,13 +210,13 @@ export default function OnboardingPage() {
               }
               className="w-6 h-6"
             />
-            <span className="font-medium" style={{ color: 'var(--text)' }}>I take ADHD medication</span>
+            <span className="font-medium text-slate-100">I take ADHD medication</span>
           </label>
 
           {formData.takesAdhgMeds && (
-            <div className="space-y-4 p-4 rounded-lg" style={{ backgroundColor: 'var(--bg)' }}>
+            <div className="space-y-4 p-4 rounded-lg bg-[#0b1219]">
               <div>
-                <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                <label className="block text-sm mb-2 text-slate-400">
                   What time do you take it?
                 </label>
                 <input
@@ -235,7 +229,7 @@ export default function OnboardingPage() {
                 />
               </div>
               <div>
-                <label className="block text-sm mb-2" style={{ color: 'var(--text-secondary)' }}>
+                <label className="block text-sm mb-2 text-slate-400">
                   Medication name (optional)
                 </label>
                 <input
@@ -251,7 +245,7 @@ export default function OnboardingPage() {
             </div>
           )}
 
-          <p className="text-sm pt-2" style={{ color: 'var(--text-secondary)' }}>
+          <p className="text-sm pt-2 text-slate-400">
             This helps me send you reminders at the right time and understand your energy levels.
           </p>
         </div>
@@ -262,13 +256,7 @@ export default function OnboardingPage() {
       description: 'How do you want to stay on track?',
       content: (
         <div className="space-y-4">
-          <label className="flex items-center gap-3 cursor-pointer p-4 rounded-lg transition-colors" style={{ backgroundColor: 'var(--bg)', borderColor: 'var(--border)' }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--surface)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'var(--bg)'
-            }}>
+          <label className="flex items-center gap-3 cursor-pointer p-4 rounded-lg transition-colors bg-[#0b1219] border border-slate-800 hover:bg-slate-800">
             <input
               type="checkbox"
               checked={formData.notificationsEnabled}
@@ -281,23 +269,23 @@ export default function OnboardingPage() {
               className="w-6 h-6"
             />
             <div>
-              <span className="font-medium block" style={{ color: 'var(--text)' }}>
+              <span className="font-medium block text-slate-100">
                 Enable notifications
               </span>
-              <span className="text-xs" style={{ color: 'var(--text-secondary)' }}>
+              <span className="text-xs text-slate-400">
                 Gentle reminders for events, medication, breaks, and hydration
               </span>
             </div>
           </label>
 
-          <div className="p-4 rounded-lg border" style={{ backgroundColor: 'rgba(59, 130, 246, 0.1)', borderColor: 'var(--primary)' }}>
-            <p className="text-sm" style={{ color: 'var(--primary-light)' }}>
+          <div className="p-4 rounded-lg border bg-[#136dec]/10 border-[#136dec]">
+            <p className="text-sm text-[#3b82f6]">
               💡 Pro tip: I'll learn your patterns over time and adjust reminders to help you thrive, not overwhelm you.
             </p>
           </div>
 
           <div className="pt-4">
-            <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
+            <p className="text-sm text-slate-400">
               Ready to get started? You're all set up! I'll meet you on the home screen.
             </p>
           </div>

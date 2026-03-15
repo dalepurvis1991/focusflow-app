@@ -4,6 +4,7 @@ import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
 import { Home, MessageCircle, Calendar, User, LogOut, Sun, Moon, CheckCircle2 } from 'lucide-react'
 import { useUser } from '@/context/UserContext'
+import { cn } from '@/lib/utils'
 
 export function SidebarNav() {
   const pathname = usePathname()
@@ -30,25 +31,25 @@ export function SidebarNav() {
   }
 
   return (
-    <div className="flex flex-col h-full" style={{ backgroundColor: 'var(--surface)' }}>
+    <div className="flex flex-col h-full bg-slate-900">
       {/* Logo */}
-      <div className="px-6 py-8 border-b" style={{ borderColor: 'var(--border)' }}>
+      <div className="px-6 py-8 border-b border-slate-800">
         <div className="flex items-center gap-3">
-          <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center flex-shrink-0">
+          <div className="w-10 h-10 rounded-full bg-[#136dec] flex items-center justify-center flex-shrink-0">
             <CheckCircle2 size={24} className="text-white" />
           </div>
           <div>
-            <h1 className="font-bold text-lg" style={{ color: 'var(--text)' }}>FocusFlow</h1>
-            <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>Your ADHD co-pilot</p>
+            <h1 className="font-bold text-lg text-slate-100">FocusFlow</h1>
+            <p className="text-xs text-slate-400">Your ADHD co-pilot</p>
           </div>
         </div>
       </div>
 
       {/* User Info */}
       {user && (
-        <div className="px-6 py-4 border-b" style={{ borderColor: 'var(--border)' }}>
-          <p className="text-sm font-medium" style={{ color: 'var(--text)' }}>{user.name}</p>
-          <p className="text-xs" style={{ color: 'var(--text-secondary)' }}>{user.email || 'No email'}</p>
+        <div className="px-6 py-4 border-b border-slate-800">
+          <p className="text-sm font-medium text-slate-100">{user.name}</p>
+          <p className="text-xs text-slate-400">{user.email || 'No email'}</p>
         </div>
       )}
 
@@ -60,23 +61,12 @@ export function SidebarNav() {
             <Link
               key={href}
               href={href}
-              className="flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200"
-              style={{
-                color: active ? 'var(--primary)' : 'var(--text-secondary)',
-                backgroundColor: active ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-              }}
-              onMouseEnter={(e) => {
-                if (!active) {
-                  e.currentTarget.style.color = 'var(--text)'
-                  e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.05)'
-                }
-              }}
-              onMouseLeave={(e) => {
-                if (!active) {
-                  e.currentTarget.style.color = 'var(--text-secondary)'
-                  e.currentTarget.style.backgroundColor = 'transparent'
-                }
-              }}
+              className={cn(
+                "flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200",
+                active
+                  ? "text-[#136dec] bg-[#136dec]/10"
+                  : "text-slate-400 hover:text-slate-300 hover:bg-slate-800/50"
+              )}
             >
               <Icon size={20} />
               <span className="font-medium">{label}</span>
@@ -86,23 +76,11 @@ export function SidebarNav() {
       </nav>
 
       {/* Bottom Actions */}
-      <div className="border-t px-4 py-4 space-y-2" style={{ borderColor: 'var(--border)' }}>
+      <div className="border-t border-slate-800 px-4 py-4 space-y-2">
         {/* Theme Toggle */}
         <button
           onClick={toggleTheme}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200"
-          style={{
-            color: 'var(--text-secondary)',
-            backgroundColor: 'transparent',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.color = 'var(--text)'
-            e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.05)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.color = 'var(--text-secondary)'
-            e.currentTarget.style.backgroundColor = 'transparent'
-          }}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-slate-400 hover:text-slate-300 hover:bg-slate-800/50"
         >
           {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
           <span className="font-medium">{theme === 'dark' ? 'Light' : 'Dark'} Mode</span>
@@ -111,17 +89,7 @@ export function SidebarNav() {
         {/* Logout */}
         <button
           onClick={handleLogout}
-          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200"
-          style={{
-            color: '#ef4444',
-            backgroundColor: 'transparent',
-          }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = 'rgba(239, 68, 68, 0.1)'
-          }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = 'transparent'
-          }}
+          className="w-full flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 text-red-500 hover:bg-red-500/10"
         >
           <LogOut size={20} />
           <span className="font-medium">Sign Out</span>

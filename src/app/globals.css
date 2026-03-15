@@ -4,14 +4,14 @@
 
 /* CSS Variables for Dynamic Theme */
 :root {
-  --bg: #09090b;
-  --surface: #18181b;
-  --border: #27272a;
+  --bg: #0b1219;
+  --surface: #111c2a;
+  --border: #1e293b;
   --text: #f8fafc;
-  --text-secondary: #a1a1aa;
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-light: #60a5fa;
+  --text-secondary: #64748b;
+  --primary: #136dec;
+  --primary-hover: #1058c7;
+  --primary-light: #3b82f6;
   --success: #22c55e;
   --warning: #f59e0b;
   --danger: #ef4444;
@@ -29,11 +29,11 @@
 }
 
 html.dark {
-  --bg: #09090b;
-  --surface: #18181b;
-  --border: #27272a;
+  --bg: #0b1219;
+  --surface: #111c2a;
+  --border: #1e293b;
   --text: #f8fafc;
-  --text-secondary: #a1a1aa;
+  --text-secondary: #64748b;
 }
 
 html.light {

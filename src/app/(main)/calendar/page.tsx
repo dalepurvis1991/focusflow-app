@@ -33,13 +33,13 @@ export default function CalendarPage() {
   }
 
   return (
-    <div className="min-h-screen bg-navy px-4 pt-6 pb-24">
+    <div className="min-h-screen bg-[#0b1219] px-4 pt-6 pb-24">
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-white">Calendar</h1>
+          <h1 className="text-3xl font-bold text-slate-100">Calendar</h1>
           <button
             onClick={() => setShowAddEvent(true)}
-            className="p-3 rounded-lg bg-purple text-white hover:bg-purple-dark transition-colors active:scale-95"
+            className="p-3 rounded-lg bg-[#136dec] text-white hover:bg-[#1058c7] transition-colors active:scale-95"
           >
             <Plus size={24} />
           </button>
@@ -47,22 +47,22 @@ export default function CalendarPage() {
 
         <div className="space-y-4 mb-8">
           <div className="flex items-center justify-between">
-            <h2 className="text-sm font-semibold text-gray-400 uppercase">
+            <h2 className="text-sm font-semibold text-slate-400 uppercase tracking-wider">
               {formatDate(selectedDate)}
             </h2>
             <div className="flex gap-2">
               <button
                 onClick={() => setSelectedDayOffset(Math.max(selectedDayOffset - 1, 0))}
                 disabled={selectedDayOffset === 0}
-                className="p-2 rounded-lg hover:bg-navy-light disabled:opacity-50 transition-colors"
+                className="p-2 rounded-lg hover:bg-slate-800 disabled:opacity-50 transition-colors"
               >
-                <ChevronLeft size={20} className="text-gray-400" />
+                <ChevronLeft size={20} className="text-slate-400" />
               </button>
               <button
                 onClick={() => setSelectedDayOffset(selectedDayOffset + 1)}
-                className="p-2 rounded-lg hover:bg-navy-light transition-colors"
+                className="p-2 rounded-lg hover:bg-slate-800 transition-colors"
               >
-                <ChevronRight size={20} className="text-gray-400" />
+                <ChevronRight size={20} className="text-slate-400" />
               </button>
             </div>
           </div>
@@ -72,10 +72,10 @@ export default function CalendarPage() {
               <button
                 key={date}
                 onClick={() => setSelectedDayOffset(index)}
-                className={`px-4 py-3 rounded-lg whitespace-nowrap font-medium transition-all ${
+                className={`px-4 py-3 rounded-lg whitespace-nowrap font-semibold transition-all ${
                   selectedDayOffset === index
-                    ? 'bg-purple text-white'
-                    : 'bg-navy-light text-gray-300 hover:bg-navy-lighter'
+                    ? 'bg-[#136dec] text-white'
+                    : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                 }`}
               >
                 {getDayLabel(date)}
@@ -93,15 +93,15 @@ export default function CalendarPage() {
         ) : (
           <div className="text-center py-12">
             <div className="text-4xl mb-4">✨</div>
-            <p className="text-gray-400 text-lg">No events scheduled for {getDayLabel(selectedDate).toLowerCase()}</p>
-            <p className="text-gray-500 text-sm mt-2">Add one to stay organized</p>
+            <p className="text-slate-400 text-lg">No events scheduled for {getDayLabel(selectedDate).toLowerCase()}</p>
+            <p className="text-slate-500 text-sm mt-2">Add one to stay organized</p>
           </div>
         )}
 
         {showAddEvent && (
           <div className="fixed inset-0 bg-black bg-opacity-50 flex items-end z-50">
-            <div className="w-full bg-navy-light rounded-t-3xl p-6 space-y-4 max-w-2xl mx-auto">
-              <h2 className="text-xl font-bold text-white">Add Event</h2>
+            <div className="w-full bg-slate-900 rounded-t-3xl p-6 space-y-4 max-w-2xl mx-auto border-t border-slate-800">
+              <h2 className="text-xl font-bold text-slate-100">Add Event</h2>
 
               <input
                 type="text"
@@ -116,7 +116,7 @@ export default function CalendarPage() {
 
               <div className="grid grid-cols-2 gap-3">
                 <div>
-                  <label className="text-sm text-gray-400 block mb-2">Start time</label>
+                  <label className="text-sm text-slate-400 block mb-2">Start time</label>
                   <input
                     type="time"
                     value={newEvent.startTime || '10:00'}
@@ -127,7 +127,7 @@ export default function CalendarPage() {
                   />
                 </div>
                 <div>
-                  <label className="text-sm text-gray-400 block mb-2">End time</label>
+                  <label className="text-sm text-slate-400 block mb-2">End time</label>
                   <input
                     type="time"
                     value={newEvent.endTime || '11:00'}
@@ -148,19 +148,19 @@ export default function CalendarPage() {
                   }
                   className="w-4 h-4"
                 />
-                <span className="text-gray-300">Set reminder</span>
+                <span className="text-slate-300">Set reminder</span>
               </label>
 
               <div className="flex gap-3 pt-4">
                 <button
                   onClick={() => setShowAddEvent(false)}
-                  className="flex-1 py-3 rounded-lg bg-navy-light text-white font-medium hover:bg-navy transition-colors"
+                  className="flex-1 py-3 rounded-lg bg-slate-800 text-white font-semibold hover:bg-slate-700 transition-colors"
                 >
                   Cancel
                 </button>
                 <button
                   onClick={() => setShowAddEvent(false)}
-                  className="flex-1 py-3 rounded-lg bg-purple text-white font-medium hover:bg-purple-dark transition-colors"
+                  className="flex-1 py-3 rounded-lg bg-[#136dec] text-white font-semibold hover:bg-[#1058c7] transition-colors"
                 >
                   Add Event
                 </button>

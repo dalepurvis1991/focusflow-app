@@ -81,21 +81,21 @@ export function timeToMinutes(time: string): number {
 export function getColorClass(color: string): string {
   const colorMap: Record<string, string> = {
     blue: 'bg-blue-500 text-white',
-    purple: 'bg-purple text-white',
-    amber: 'bg-amber text-white',
+    purple: 'bg-purple-500 text-white',
+    amber: 'bg-amber-500 text-white',
     green: 'bg-green-500 text-white',
     pink: 'bg-pink-500 text-white',
   }
-  return colorMap[color] || 'bg-purple text-white'
+  return colorMap[color] || 'bg-purple-500 text-white'
 }
 
 export function getColorBorderClass(color: string): string {
   const colorMap: Record<string, string> = {
     blue: 'border-blue-500',
-    purple: 'border-purple',
-    amber: 'border-amber',
+    purple: 'border-purple-500',
+    amber: 'border-amber-500',
     green: 'border-green-500',
     pink: 'border-pink-500',
   }
-  return colorMap[color] || 'border-purple'
+  return colorMap[color] || 'border-purple-500'
 }

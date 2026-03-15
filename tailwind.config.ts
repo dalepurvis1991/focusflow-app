@@ -10,13 +10,13 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Dark mode
+        // Dark mode - Stitch POS design system
         dark: {
-          bg: '#09090b',
-          surface: '#18181b',
-          border: '#27272a',
+          bg: '#0b1219',
+          surface: '#111c2a',
+          border: '#1e293b',
           text: '#f8fafc',
-          'text-secondary': '#a1a1aa',
+          'text-secondary': '#64748b',
         },
         // Light mode
         light: {
@@ -26,10 +26,10 @@ const config: Config = {
           text: '#09090b',
           'text-secondary': '#71717a',
         },
-        // Semantic colors
-        primary: '#3b82f6',
-        'primary-hover': '#2563eb',
-        'primary-light': '#60a5fa',
+        // Semantic colors - Stitch POS palette
+        primary: '#136dec',
+        'primary-hover': '#1058c7',
+        'primary-light': '#3b82f6',
         success: '#22c55e',
         warning: '#f59e0b',
         danger: '#ef4444',
@@ -58,7 +58,7 @@ const config: Config = {
         'pulse-soft': 'pulse-soft 2s ease-in-out infinite',
       },
       fontFamily: {
-        sans: ['system-ui', '-apple-system', 'sans-serif'],
+        sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif'],
       },
       fontSize: {
         base: ['1rem', { lineHeight: '1.5rem' }],

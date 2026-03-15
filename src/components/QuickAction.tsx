@@ -19,9 +19,9 @@ export function QuickAction({
   className,
 }: QuickActionProps) {
   const variants = {
-    primary: 'bg-gradient-to-br from-purple to-purple-dark text-white',
-    secondary: 'bg-navy-light text-white border border-navy-lighter',
-    outline: 'border-2 border-purple text-purple',
+    primary: 'bg-[#136dec] text-white hover:bg-[#1058c7]',
+    secondary: 'bg-slate-800 text-white border border-slate-700 hover:bg-slate-700',
+    outline: 'border-2 border-[#136dec] text-[#136dec]',
   }
 
   return (
@@ -29,13 +29,13 @@ export function QuickAction({
       onClick={onClick}
       disabled={disabled}
       className={cn(
-        'p-6 rounded-2xl transition-all duration-200 flex flex-col items-center justify-center gap-3 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed',
+        'p-6 rounded-xl transition-all duration-200 flex flex-col items-center justify-center gap-3 hover:scale-105 active:scale-95 disabled:opacity-50 disabled:cursor-not-allowed font-semibold',
         variants[variant],
         className
       )}
     >
       <div className="text-2xl">{icon}</div>
-      <span className="text-sm font-semibold text-center">{label}</span>
+      <span className="text-sm text-center">{label}</span>
     </button>
   )
 }

@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   icons: {
     icon: [
       {
-        url: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect fill="%2309090b" width="180" height="180"/><circle cx="90" cy="90" r="60" fill="%233b82f6"/><path d="M70 90 L85 105 L110 70" stroke="white" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
+        url: 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180"><rect fill="%230b1219" width="180" height="180"/><circle cx="90" cy="90" r="60" fill="%23136dec"/><path d="M70 90 L85 105 L110 70" stroke="white" stroke-width="8" fill="none" stroke-linecap="round" stroke-linejoin="round"/></svg>',
         sizes: '180x180',
       },
     ],
@@ -29,10 +29,12 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
-        <meta name="theme-color" content="#09090b" />
+        <meta name="theme-color" content="#0b1219" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
         <meta name="apple-mobile-web-app-title" content="FocusFlow" />
+        <link rel="preconnect" href="https://rsms.me/inter/" />
+        <link rel="stylesheet" href="https://rsms.me/inter/inter.css" />
         <script
           dangerouslySetInnerHTML={{
             __html: `

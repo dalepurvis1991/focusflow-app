@@ -71,34 +71,28 @@ export default function RegisterPage() {
   })()
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4" style={{ backgroundColor: 'var(--bg)' }}>
+    <div className="min-h-screen flex items-center justify-center p-4 bg-[#0b1219]">
       <div className="w-full max-w-md">
         {/* Logo and Header */}
         <div className="text-center mb-8">
           <div className="flex items-center justify-center gap-3 mb-4">
-            <div className="w-12 h-12 rounded-full bg-primary flex items-center justify-center">
+            <div className="w-12 h-12 rounded-full bg-[#136dec] flex items-center justify-center">
               <CheckCircle2 size={28} className="text-white" />
             </div>
-            <h1 className="text-3xl font-bold" style={{ color: 'var(--text)' }}>FocusFlow</h1>
+            <h1 className="text-3xl font-bold text-slate-100">FocusFlow</h1>
           </div>
-          <p className="text-lg" style={{ color: 'var(--text-secondary)' }}>Your ADHD co-pilot</p>
+          <p className="text-lg text-slate-400">Your ADHD co-pilot</p>
         </div>
 
         {/* Register Card */}
-        <div
-          className="rounded-2xl p-8 shadow-lg border"
-          style={{
-            backgroundColor: 'var(--surface)',
-            borderColor: 'var(--border)',
-          }}
-        >
-          <h2 className="text-2xl font-bold mb-2" style={{ color: 'var(--text)' }}>Get Started</h2>
-          <p className="mb-6" style={{ color: 'var(--text-secondary)' }}>Create your FocusFlow account</p>
+        <div className="rounded-xl p-8 shadow-lg border bg-slate-900 border-slate-800">
+          <h2 className="text-2xl font-bold mb-2 text-slate-100">Get Started</h2>
+          <p className="mb-6 text-slate-400">Create your FocusFlow account</p>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name Field */}
             <div>
-              <label htmlFor="name" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="name" className="block text-sm font-medium mb-2 text-slate-400">
                 Full Name
               </label>
               <input
@@ -107,11 +101,9 @@ export default function RegisterPage() {
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 placeholder="Alex Chen"
-                className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-primary focus:ring-offset-0"
+                className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-[#136dec] focus:ring-offset-0 bg-[#0b1219] text-slate-100"
                 style={{
-                  backgroundColor: 'var(--bg)',
-                  borderColor: error.includes('Name') ? '#ef4444' : 'var(--border)',
-                  color: 'var(--text)',
+                  borderColor: error.includes('Name') ? '#ef4444' : '#334155',
                 }}
                 disabled={isLoading}
               />
@@ -119,7 +111,7 @@ export default function RegisterPage() {
 
             {/* Email Field */}
             <div>
-              <label htmlFor="email" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="email" className="block text-sm font-medium mb-2 text-slate-400">
                 Email Address
               </label>
               <input
@@ -128,11 +120,9 @@ export default function RegisterPage() {
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@example.com"
-                className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-primary focus:ring-offset-0"
+                className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-[#136dec] focus:ring-offset-0 bg-[#0b1219] text-slate-100"
                 style={{
-                  backgroundColor: 'var(--bg)',
-                  borderColor: error.includes('email') || error.includes('Email') ? '#ef4444' : 'var(--border)',
-                  color: 'var(--text)',
+                  borderColor: error.includes('email') || error.includes('Email') ? '#ef4444' : '#334155',
                 }}
                 disabled={isLoading}
               />
@@ -141,7 +131,7 @@ export default function RegisterPage() {
             {/* Password Field */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <label htmlFor="password" className="block text-sm font-medium" style={{ color: 'var(--text-secondary)' }}>
+                <label htmlFor="password" className="block text-sm font-medium text-slate-400">
                   Password
                 </label>
                 {password && (
@@ -157,26 +147,23 @@ export default function RegisterPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-primary focus:ring-offset-0 pr-12"
+                  className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-[#136dec] focus:ring-offset-0 pr-12 bg-[#0b1219] text-slate-100"
                   style={{
-                    backgroundColor: 'var(--bg)',
-                    borderColor: error.includes('Password') || error.includes('Passwords') ? '#ef4444' : 'var(--border)',
-                    color: 'var(--text)',
+                    borderColor: error.includes('Password') || error.includes('Passwords') ? '#ef4444' : '#334155',
                   }}
                   disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: 'var(--text-secondary)' }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-slate-400"
                   disabled={isLoading}
                 >
                   {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
                 </button>
               </div>
               {password && (
-                <div className="mt-2 h-1 w-full rounded-full overflow-hidden" style={{ backgroundColor: 'var(--border)' }}>
+                <div className="mt-2 h-1 w-full rounded-full overflow-hidden bg-slate-800">
                   <div
                     className="h-full transition-all duration-300"
                     style={{
@@ -190,7 +177,7 @@ export default function RegisterPage() {
 
             {/* Confirm Password Field */}
             <div>
-              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2" style={{ color: 'var(--text-secondary)' }}>
+              <label htmlFor="confirmPassword" className="block text-sm font-medium mb-2 text-slate-400">
                 Confirm Password
               </label>
               <div className="relative">
@@ -200,19 +187,16 @@ export default function RegisterPage() {
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   placeholder="••••••••"
-                  className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-primary focus:ring-offset-0 pr-12"
+                  className="w-full px-4 py-3 rounded-lg transition-all focus:ring-2 focus:ring-[#136dec] focus:ring-offset-0 pr-12 bg-[#0b1219] text-slate-100"
                   style={{
-                    backgroundColor: 'var(--bg)',
-                    borderColor: error.includes('Passwords') ? '#ef4444' : 'var(--border)',
-                    color: 'var(--text)',
+                    borderColor: error.includes('Passwords') ? '#ef4444' : '#334155',
                   }}
                   disabled={isLoading}
                 />
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors"
-                  style={{ color: 'var(--text-secondary)' }}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 transition-colors text-slate-400"
                   disabled={isLoading}
                 >
                   {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -222,9 +206,9 @@ export default function RegisterPage() {
 
             {/* Error Message */}
             {error && (
-              <div className="p-4 rounded-lg flex items-start gap-3" style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', borderColor: '#ef4444', borderWidth: '1px' }}>
-                <AlertCircle size={20} style={{ color: '#ef4444', flexShrink: 0, marginTop: '2px' }} />
-                <p className="text-sm font-medium" style={{ color: '#ef4444' }}>{error}</p>
+              <div className="p-4 rounded-lg flex items-start gap-3 bg-red-500/10 border border-red-500">
+                <AlertCircle size={20} className="text-red-500 flex-shrink-0 mt-0.5" />
+                <p className="text-sm font-medium text-red-500">{error}</p>
               </div>
             )}
 
@@ -234,7 +218,7 @@ export default function RegisterPage() {
               disabled={isLoading}
               className="w-full py-3 rounded-lg font-semibold transition-all text-white flex items-center justify-center gap-2 hover:shadow-lg"
               style={{
-                backgroundColor: isLoading ? '#2563eb' : 'var(--primary)',
+                backgroundColor: isLoading ? '#2563eb' : '#136dec',
                 opacity: isLoading ? 0.8 : 1,
               }}
             >
@@ -252,10 +236,10 @@ export default function RegisterPage() {
           {/* Divider */}
           <div className="my-6 relative">
             <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t" style={{ borderColor: 'var(--border)' }}></div>
+              <div className="w-full border-t border-slate-800"></div>
             </div>
             <div className="relative flex justify-center text-sm">
-              <span className="px-2" style={{ backgroundColor: 'var(--surface)', color: 'var(--text-secondary)' }}>
+              <span className="px-2 bg-slate-900 text-slate-400">
                 Already have an account?
               </span>
             </div>
@@ -264,25 +248,14 @@ export default function RegisterPage() {
           {/* Sign In Link */}
           <Link
             href="/login"
-            className="w-full py-3 rounded-lg font-semibold transition-all text-center border-2"
-            style={{
-              color: 'var(--primary)',
-              borderColor: 'var(--primary)',
-              backgroundColor: 'transparent',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.backgroundColor = 'rgba(59, 130, 246, 0.1)'
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.backgroundColor = 'transparent'
-            }}
+            className="w-full py-3 rounded-lg font-semibold transition-all text-center border-2 text-[#136dec] border-[#136dec] hover:bg-[#136dec]/10"
           >
             Sign In
           </Link>
         </div>
 
         {/* Terms Notice */}
-        <p className="text-xs text-center mt-6" style={{ color: 'var(--text-secondary)' }}>
+        <p className="text-xs text-center mt-6 text-slate-400">
           By creating an account, you agree to our Terms of Service and Privacy Policy
         </p>
       </div>
