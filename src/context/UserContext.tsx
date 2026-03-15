@@ -187,28 +187,24 @@ export function UserProvider({ children }: { children: React.ReactNode }) {
     applyTheme(newTheme)
   }
 
-  if (!mounted) {
-    return <>{children}</>
+  const contextValue: UserContextType = {
+    user,
+    streak,
+    isLoggedIn: !!user,
+    theme,
+    setUser,
+    updateOnboarding,
+    updatePreferences,
+    updateStreak,
+    clearUser: logout,
+    login,
+    register,
+    logout,
+    toggleTheme,
   }
 
   return (
-    <UserContext.Provider
-      value={{
-        user,
-        streak,
-        isLoggedIn: !!user,
-        theme,
-        setUser,
-        updateOnboarding,
-        updatePreferences,
-        updateStreak,
-        clearUser: logout,
-        login,
-        register,
-        logout,
-        toggleTheme,
-      }}
-    >
+    <UserContext.Provider value={contextValue}>
       {children}
     </UserContext.Provider>
   )
