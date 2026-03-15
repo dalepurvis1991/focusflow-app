@@ -131,21 +131,17 @@ export function CalendarProvider({ children }: { children: React.ReactNode }) {
     })
   }
 
-  if (!mounted) {
-    return <>{children}</>
+  const contextValue: CalendarContextType = {
+    events,
+    addEvent,
+    deleteEvent,
+    updateEvent,
+    getEventsForDate,
+    getUpcomingEvents,
   }
 
   return (
-    <CalendarContext.Provider
-      value={{
-        events,
-        addEvent,
-        deleteEvent,
-        updateEvent,
-        getEventsForDate,
-        getUpcomingEvents,
-      }}
-    >
+    <CalendarContext.Provider value={contextValue}>
       {children}
     </CalendarContext.Provider>
   )
