@@ -24,14 +24,21 @@ export default function DashboardPage() {
     .slice(0, 3)
 
   if (!user?.onboarding) {
-    return null
+    return (
+      <div className="min-h-full px-4 pt-8 bg-[#0b1219] flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-12 h-12 border-4 border-[#136dec] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+          <p className="text-slate-400">Loading...</p>
+        </div>
+      </div>
+    )
   }
 
   const nextEvent = upcomingEvents[0]
   const nextEventTime = nextEvent ? formatTime(nextEvent.startTime) : null
 
   return (
-    <div className="min-h-screen px-4 pt-8 bg-[#0b1219]">
+    <div className="min-h-full px-4 pt-8 bg-[#0b1219]">
       <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-slate-100">

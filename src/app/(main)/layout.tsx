@@ -7,7 +7,7 @@ export default function MainLayout({
   children: React.ReactNode
 }) {
   return (
-    <div className="flex h-screen overflow-hidden bg-[#0b1219]">
+    <div className="flex h-dvh overflow-hidden bg-[#0b1219]">
       {/* Sidebar - visible on tablet and above */}
       <div className="hidden md:flex md:flex-col md:w-64 border-r border-slate-800 bg-slate-900">
         <SidebarNav />
