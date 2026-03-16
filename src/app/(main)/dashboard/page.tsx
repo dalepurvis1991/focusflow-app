@@ -3,6 +3,7 @@
 import { useUser } from '@/context/UserContext'
 import { useCalendar } from '@/context/CalendarContext'
 import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 import { getGreeting, formatTime, getDateFromToday, getTodayDate } from '@/lib/utils'
 import { EventCard } from '@/components/EventCard'
 import { NudgeCard } from '@/components/NudgeCard'
@@ -12,8 +13,22 @@ import Link from 'next/link'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { user, streak } = useUser()
+  const { user, streak, isLoggedIn } = useUser()
   const { getUpcomingEvents } = useCalendar()
+  const [mounted, setMounted] = useState(false)
+
+  useEffect(() => {
+    setMounted(true)
+  }, [])
+
+  useEffect(() => {
+    if (!mounted) return
+    if (!isLoggedIn) {
+      router.push('/login')
+    } else if (!user?.onboarding?.completedAt) {
+      router.push('/onboarding')
+    }
+  }, [mounted, isLoggedIn, user, router])
 
   const hour = new Date().getHours()
   const greeting = getGreeting(hour)
@@ -23,7 +38,7 @@ export default function DashboardPage() {
     .filter((e) => e.date === todayDate)
     .slice(0, 3)
 
-  if (!user?.onboarding) {
+  if (!mounted || !user?.onboarding) {
     return (
       <div className="min-h-full px-4 pt-8 bg-[#0b1219] flex items-center justify-center">
         <div className="text-center">
