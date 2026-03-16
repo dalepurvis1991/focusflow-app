@@ -78,7 +78,7 @@ export default function OnboardingPage() {
   const isStepValid = (): boolean => {
     switch (currentStep) {
       case 0:
-        return formData.name.trim().length > 0
+        return true
       case 1:
         return formData.name.trim().length > 0 && formData.age.length > 0
       case 2:

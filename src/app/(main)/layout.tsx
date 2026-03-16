@@ -1,5 +1,6 @@
 import { BottomNav } from '@/components/BottomNav'
 import { SidebarNav } from '@/components/SidebarNav'
+import { AuthGuard } from '@/components/AuthGuard'
 
 export default function MainLayout({
   children,
@@ -17,7 +18,7 @@ export default function MainLayout({
       <div className="flex-1 flex flex-col overflow-hidden">
         <main className="flex-1 overflow-auto pb-24 md:pb-6">
           <div className="mx-auto max-w-full md:max-w-none">
-            {children}
+            <AuthGuard>{children}</AuthGuard>
           </div>
         </main>
 

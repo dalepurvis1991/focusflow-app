@@ -16,7 +16,11 @@ export default function ProfilePage() {
   }
 
   if (!user?.onboarding) {
-    return null
+    return (
+      <div className="min-h-full flex items-center justify-center bg-[#0b1219]">
+        <div className="w-12 h-12 border-4 border-[#136dec] border-t-transparent rounded-full animate-spin"></div>
+      </div>
+    )
   }
 
   return (

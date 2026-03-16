@@ -3,7 +3,6 @@
 import { useUser } from '@/context/UserContext'
 import { useCalendar } from '@/context/CalendarContext'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
 import { getGreeting, formatTime, getDateFromToday, getTodayDate } from '@/lib/utils'
 import { EventCard } from '@/components/EventCard'
 import { NudgeCard } from '@/components/NudgeCard'
@@ -13,22 +12,8 @@ import Link from 'next/link'
 
 export default function DashboardPage() {
   const router = useRouter()
-  const { user, streak, isLoggedIn } = useUser()
+  const { user, streak } = useUser()
   const { getUpcomingEvents } = useCalendar()
-  const [mounted, setMounted] = useState(false)
-
-  useEffect(() => {
-    setMounted(true)
-  }, [])
-
-  useEffect(() => {
-    if (!mounted) return
-    if (!isLoggedIn) {
-      router.push('/login')
-    } else if (!user?.onboarding?.completedAt) {
-      router.push('/onboarding')
-    }
-  }, [mounted, isLoggedIn, user, router])
 
   const hour = new Date().getHours()
   const greeting = getGreeting(hour)
@@ -37,17 +22,6 @@ export default function DashboardPage() {
   const upcomingEvents = getUpcomingEvents(1)
     .filter((e) => e.date === todayDate)
     .slice(0, 3)
-
-  if (!mounted || !user?.onboarding) {
-    return (
-      <div className="min-h-full px-4 pt-8 bg-[#0b1219] flex items-center justify-center">
-        <div className="text-center">
-          <div className="w-12 h-12 border-4 border-[#136dec] border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-slate-400">Loading...</p>
-        </div>
-      </div>
-    )
-  }
 
   const nextEvent = upcomingEvents[0]
   const nextEventTime = nextEvent ? formatTime(nextEvent.startTime) : null
