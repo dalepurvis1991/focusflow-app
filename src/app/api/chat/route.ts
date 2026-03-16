@@ -1,6 +1,7 @@
 import Anthropic from '@anthropic-ai/sdk'
 import { Event } from '@/types/calendar'
 import { User } from '@/types/user'
+import { getRelevantKnowledge } from '@/lib/adhd-knowledge'
 
 interface ChatRequest {
   messages: Array<{
@@ -10,6 +11,8 @@ interface ChatRequest {
   events: Event[]
   user: User | null
   focusMode?: boolean
+  personality?: 'coach' | 'friend' | 'motivator' | 'calm'
+  memory?: string
 }
 
 interface ToolResult {
@@ -177,7 +180,13 @@ async function searchWeb(query: string): Promise<string> {
   }
 }
 
-function buildSystemPrompt(user: User | null, focusMode: boolean = false): string {
+function buildSystemPrompt(
+  user: User | null,
+  focusMode: boolean = false,
+  personality: 'coach' | 'friend' | 'motivator' | 'calm' = 'coach',
+  memory: string = '',
+  knowledge: string = ''
+): string {
   const userName = user?.onboarding?.name || user?.name || 'there'
   const wakeTime = user?.onboarding?.wakeTime || '7:00 AM'
   const workStart = user?.onboarding?.workStartTime || '9:00 AM'
@@ -186,16 +195,29 @@ function buildSystemPrompt(user: User | null, focusMode: boolean = false): strin
     ? `The user takes ${user.onboarding.medsName || 'ADHD medication'} at ${user.onboarding.medsTime || '8:00 AM'}.`
     : 'The user does not take ADHD medication.'
 
+  const personalityStyles = {
+    coach: `Warm, structured, practical. Give clear steps and guidance. Start with "Here's what I'd suggest..." when offering advice. Break down tasks into manageable steps.`,
+    friend: `Casual, empathetic, validating. Use humor and relatable language. Start with things like "Honestly? That sounds exhausting." or "I feel you on that." Be a supportive friend who gets it.`,
+    motivator: `High energy, encouraging, celebrates wins. Use exclamation marks sparingly but with impact. Say things like "You've GOT this!" or "Let's smash it!" Focus on what they can accomplish.`,
+    calm: `Gentle, mindful, grounding. Slower pace, no urgency. Start with "Take a breath." Suggest looking at one thing at a time. Create a sense of safety and ease.`,
+  }
+
+  const memorySection = memory ? `\nAbout the user (learned from previous conversations):\n${memory}` : ''
+  const knowledgeSection = knowledge ? `\n${knowledge}\nNote: Reference this knowledge naturally — don't lecture. Weave it into practical advice.` : ''
+
   return `You are FocusFlow Coach, a warm, supportive AI assistant designed to help people with ADHD manage their time, tasks, and well-being. You have access to the user's calendar, can create events, set reminders, and search the web for real-world information.
 
 About the user:
 - Name: ${userName}
 - Wake time: ${wakeTime}
 - Work hours: ${workStart} - ${workEnd}
-- ${medsInfo}
+- ${medsInfo}${memorySection}${knowledgeSection}
 
 Your personality and approach:
-- Warm, non-judgmental, and validating. ADHD is real, and you get it.
+${personalityStyles[personality]}
+
+General approach:
+- Non-judgmental and validating. ADHD is real, and you get it.
 - Practical and action-oriented. Focus on what the user can do right now.
 - Concise and clear. ADHD brains work better with short, focused messages.
 - Supportive of executive function. Break tasks into manageable pieces.
@@ -215,6 +237,7 @@ Always:
 4. If something is unclear, ask clarifying questions.
 5. For information queries about addresses, phone numbers, hours, directions, or local services, use web_search to provide accurate current information.
 6. Provide emotional support for ADHD struggles while also being practical.
+7. If the user shares something important about themselves, keep it in mind - it's valuable context for future conversations.
 
 Today's date for reference: ${new Date().toISOString().split('T')[0]}
 
@@ -296,9 +319,13 @@ async function processTool(
 
 export async function POST(req: Request) {
   try {
-    const { messages, events, user, focusMode } = (await req.json()) as ChatRequest
+    const { messages, events, user, focusMode, personality = 'coach', memory = '' } = (await req.json()) as ChatRequest
 
-    const systemPrompt = buildSystemPrompt(user, focusMode)
+    // Extract the latest user message and get relevant knowledge
+    const latestUserMessage = messages.length > 0 ? messages[messages.length - 1].content : ''
+    const relevantKnowledge = latestUserMessage ? getRelevantKnowledge(latestUserMessage, 500) : ''
+
+    const systemPrompt = buildSystemPrompt(user, focusMode, personality, memory, relevantKnowledge)
 
     let conversationMessages: Anthropic.MessageParam[] = messages.map((msg) => ({
       role: msg.role,
@@ -367,10 +394,22 @@ export async function POST(req: Request) {
     )
     const finalResponse = textBlock?.text || 'I apologize, I could not generate a response.'
 
+    // Check if Claude learned something new about the user that should be added to memory
+    // Look for markers in the response that indicate new insights
+    let memoryUpdate: string | undefined
+    if (finalResponse.toLowerCase().includes('note to self:') || finalResponse.toLowerCase().includes('i learned:')) {
+      // If Claude explicitly noted something, extract it
+      const noteMatch = finalResponse.match(/(?:note to self:|i learned:)\s*(.+?)(?:\.|$)/i)
+      if (noteMatch) {
+        memoryUpdate = noteMatch[1].trim()
+      }
+    }
+
     return new Response(
       JSON.stringify({
         role: 'assistant',
         content: finalResponse,
+        memoryUpdate,
       }),
       {
         headers: {

@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
+import { useRewards } from '@/context/RewardsContext'
 import { FirstTimeGuide } from '@/components/FirstTimeGuide'
 import { ChevronLeft, Play, Pause, RotateCcw, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -13,6 +14,7 @@ type TimerState = 'idle' | 'focusing' | 'break' | 'finished'
 export default function FocusPage() {
   const router = useRouter()
   const { user } = useUser()
+  const { recordFocusSession } = useRewards()
 
   const focusDuration = user?.preferences?.focusDuration || 25
   const breakDuration = user?.preferences?.breakDuration || 5
@@ -60,6 +62,9 @@ export default function FocusPage() {
       const newCount = sessionsCompleted + 1
       localStorage.setItem(`focusflow_sessions_${today}`, newCount.toString())
       setSessionsCompleted(newCount)
+
+      // Record focus session in rewards system
+      recordFocusSession(focusDuration)
 
       // Switch to break
       setTimerState('break')

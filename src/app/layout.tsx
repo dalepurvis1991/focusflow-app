@@ -1,6 +1,8 @@
 import type { Metadata, Viewport } from 'next'
 import { UserProvider } from '@/context/UserContext'
 import { CalendarProvider } from '@/context/CalendarContext'
+import { RewardsProvider } from '@/context/RewardsContext'
+import { ChatProvider } from '@/context/ChatContext'
 import './globals.css'
 
 export const viewport: Viewport = {
@@ -61,9 +63,13 @@ export default function RootLayout({
       <body className="antialiased">
         <UserProvider>
           <CalendarProvider>
-            <div className="min-h-screen transition-colors duration-300">
-              {children}
-            </div>
+            <ChatProvider>
+              <RewardsProvider>
+                <div className="min-h-screen transition-colors duration-300">
+                  {children}
+                </div>
+              </RewardsProvider>
+            </ChatProvider>
           </CalendarProvider>
         </UserProvider>
       </body>

@@ -3,13 +3,15 @@
 import { useState, useEffect } from 'react'
 import { useUser } from '@/context/UserContext'
 import { useCalendar } from '@/context/CalendarContext'
+import { useRewards } from '@/context/RewardsContext'
+import { useHealth } from '@/context/HealthContext'
 import { useRouter } from 'next/navigation'
 import { getGreeting, formatTime, getDateFromToday, getTodayDate } from '@/lib/utils'
 import { EventCard } from '@/components/EventCard'
 import { NudgeCard } from '@/components/NudgeCard'
 import { QuickAction } from '@/components/QuickAction'
 import { FirstTimeGuide } from '@/components/FirstTimeGuide'
-import { MessageCircle, Calendar, Flame } from 'lucide-react'
+import { MessageCircle, Calendar, Flame, Trophy, Heart } from 'lucide-react'
 import Link from 'next/link'
 
 type NudgeType = { type: 'water' | 'break' | 'movement' | 'breathing'; title: string; description: string }
@@ -34,7 +36,14 @@ export default function DashboardPage() {
   const router = useRouter()
   const { user, streak } = useUser()
   const { getUpcomingEvents } = useCalendar()
+  const { recordDailyLogin, recordNudgeDismissed, state: rewardsState } = useRewards()
+  const { state: healthState, getWeeklySummary } = useHealth()
   const [nudgeDismissed, setNudgeDismissed] = useState(false)
+
+  // Record daily login on mount
+  useEffect(() => {
+    recordDailyLogin()
+  }, [recordDailyLogin])
 
   const hour = new Date().getHours()
   const greeting = getGreeting(hour)
@@ -49,6 +58,8 @@ export default function DashboardPage() {
 
   const nextEvent = upcomingEvents[0]
   const nextEventTime = nextEvent ? formatTime(nextEvent.startTime) : null
+
+  const weeklySummary = getWeeklySummary(todayDate)
 
   return (
     <div className="min-h-full px-4 pt-8 bg-[#0b1219]">
@@ -75,6 +86,18 @@ export default function DashboardPage() {
           </p>
         </div>
 
+        {/* Focus Points Card */}
+        <Link href="/rewards">
+          <div className="flex items-center gap-3 p-4 rounded-xl border border-yellow-500/30 bg-gradient-to-br from-amber-600/20 to-yellow-600/20 hover:from-amber-600/30 hover:to-yellow-600/30 transition-colors cursor-pointer">
+            <span className="text-2xl flex-shrink-0">⭐</span>
+            <div className="flex-1">
+              <p className="font-semibold text-lg text-slate-100">{rewardsState.totalPoints} Focus Points</p>
+              <p className="text-sm text-yellow-300">{rewardsState.weeklyPoints} this week</p>
+            </div>
+            <Trophy className="flex-shrink-0 text-yellow-500" size={20} />
+          </div>
+        </Link>
+
         {streak && (
           <div className="flex items-center gap-3 p-4 rounded-xl border border-slate-800 bg-slate-900/50">
             <Flame className="flex-shrink-0 text-yellow-500" size={24} />
@@ -83,6 +106,35 @@ export default function DashboardPage() {
               <p className="text-sm text-yellow-500">Keep it up!</p>
             </div>
           </div>
+        )}
+
+        {healthState.streak > 0 && (
+          <Link href="/health">
+            <div className="flex items-start gap-3 p-4 rounded-xl border border-rose-500/30 bg-gradient-to-br from-rose-600/20 to-pink-600/20 hover:from-rose-600/30 hover:to-pink-600/30 transition-colors cursor-pointer">
+              <Heart className="flex-shrink-0 text-rose-500 mt-1" size={20} />
+              <div className="flex-1">
+                <p className="font-semibold text-slate-100 mb-2">{healthState.streak} day health streak 🔥</p>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>
+                    <p className="text-slate-400">Sleep Avg</p>
+                    <p className="font-semibold text-slate-100">{weeklySummary.sleepHours || '—'} hrs</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-400">Meds</p>
+                    <p className="font-semibold text-slate-100">{weeklySummary.medsAdherence}%</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-400">Focus</p>
+                    <p className="font-semibold text-slate-100">{weeklySummary.avgFocus.toFixed(1)}/10</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-400">Energy</p>
+                    <p className="font-semibold text-slate-100">{weeklySummary.avgEnergy.toFixed(1)}/10</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </Link>
         )}
 
         {nextEvent && (
@@ -116,7 +168,10 @@ export default function DashboardPage() {
               title={nudge.title}
               description={nudge.description}
               actionLabel="Thanks!"
-              onAction={() => setNudgeDismissed(true)}
+              onAction={() => {
+                recordNudgeDismissed()
+                setNudgeDismissed(true)
+              }}
             />
           )
         })()}

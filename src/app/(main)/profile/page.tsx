@@ -140,6 +140,23 @@ export default function ProfilePage() {
                 <option value="45">45 min</option>
               </select>
             </div>
+            <div className="flex items-center justify-between p-3 rounded-lg bg-slate-800">
+              <span className="text-slate-400">Coach personality</span>
+              <select
+                value={user.preferences.personality || 'coach'}
+                onChange={(e) =>
+                  updatePreferences({
+                    personality: e.target.value as 'coach' | 'friend' | 'motivator' | 'calm',
+                  })
+                }
+                className="bg-slate-900 border border-slate-700 text-white"
+              >
+                <option value="coach">Coach</option>
+                <option value="friend">Friend</option>
+                <option value="motivator">Motivator</option>
+                <option value="calm">Calm</option>
+              </select>
+            </div>
             <label className="flex items-center justify-between p-3 rounded-lg bg-slate-800 cursor-pointer hover:bg-slate-700 transition-colors">
               <span className="text-slate-400">Break reminders</span>
               <input

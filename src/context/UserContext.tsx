@@ -29,6 +29,7 @@ const DEFAULT_PREFERENCES: Preferences = {
   soundEnabled: true,
   darkMode: true,
   theme: 'dark',
+  personality: 'coach',
 }
 
 export function UserProvider({ children }: { children: React.ReactNode }) {

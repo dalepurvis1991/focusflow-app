@@ -7,11 +7,13 @@ export interface Message {
   sentiment?: 'positive' | 'neutral' | 'needs-support'
 }
 
+export type Personality = 'coach' | 'friend' | 'motivator' | 'calm'
+
 export interface Conversation {
   id: string
-  userId: string
+  title: string
+  messages: Message[]
+  personality: Personality
   createdAt: number
   updatedAt: number
-  messages: Message[]
-  topic?: string
 }

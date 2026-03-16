@@ -19,6 +19,7 @@ export interface Preferences {
   soundEnabled: boolean
   darkMode: boolean
   theme?: 'dark' | 'light'
+  personality?: 'coach' | 'friend' | 'motivator' | 'calm'
 }
 
 export interface User {

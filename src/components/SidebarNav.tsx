@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname, useRouter } from 'next/navigation'
-import { Home, MessageCircle, Calendar, User, LogOut, Sun, Moon, CheckCircle2 } from 'lucide-react'
+import { Home, MessageCircle, Calendar, User, LogOut, Sun, Moon, CheckCircle2, Trophy, Heart } from 'lucide-react'
 import { useUser } from '@/context/UserContext'
 import { cn } from '@/lib/utils'
 
@@ -22,6 +22,8 @@ export function SidebarNav() {
     { href: '/dashboard', label: 'Home', icon: Home },
     { href: '/assistant', label: 'Assistant', icon: MessageCircle },
     { href: '/calendar', label: 'Calendar', icon: Calendar },
+    { href: '/health', label: 'Health', icon: Heart },
+    { href: '/rewards', label: 'Rewards', icon: Trophy },
     { href: '/profile', label: 'Profile', icon: User },
   ]
 
