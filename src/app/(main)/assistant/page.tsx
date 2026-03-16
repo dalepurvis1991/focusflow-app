@@ -2,6 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react'
 import { ChatBubble } from '@/components/ChatBubble'
+import { FirstTimeGuide } from '@/components/FirstTimeGuide'
 import { Send, Mic } from 'lucide-react'
 import { generateId } from '@/lib/utils'
 import { Message } from '@/types/assistant'
@@ -115,6 +116,15 @@ export default function AssistantPage() {
 
   return (
     <div className="min-h-screen bg-[#0b1219] flex flex-col">
+      <FirstTimeGuide
+        pageKey="assistant"
+        title="Meet your AI coach"
+        tips={[
+          "I can help you manage your calendar — try 'What's on my schedule tomorrow?'",
+          "Ask me to set reminders, create events, or help you plan your day",
+          "I understand typos and casual language — just talk to me like a friend",
+        ]}
+      />
       <div className="sticky top-0 bg-slate-900 border-b border-slate-800 p-4 z-10">
         <h1 className="text-xl font-bold text-slate-100">FocusFlow Coach</h1>
         <p className="text-sm text-slate-400">Always here to listen</p>

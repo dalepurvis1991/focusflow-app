@@ -3,8 +3,10 @@
 import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
-import { ChevronLeft, Play, Pause, RotateCcw } from 'lucide-react'
+import { FirstTimeGuide } from '@/components/FirstTimeGuide'
+import { ChevronLeft, Play, Pause, RotateCcw, MessageCircle } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { FocusChat } from '@/components/FocusChat'
 
 type TimerState = 'idle' | 'focusing' | 'break' | 'finished'
 
@@ -21,6 +23,7 @@ export default function FocusPage() {
   const [sessionCount, setSessionCount] = useState(1)
   const [isRunning, setIsRunning] = useState(false)
   const [sessionsCompleted, setSessionsCompleted] = useState(0)
+  const [isChatOpen, setIsChatOpen] = useState(false)
 
   // Get focus sessions completed today from localStorage
   useEffect(() => {
@@ -138,6 +141,15 @@ export default function FocusPage() {
 
   return (
     <div className="min-h-full bg-[#0b1219] px-4 pt-6 pb-28">
+      <FirstTimeGuide
+        pageKey="focus"
+        title="Focus mode"
+        tips={[
+          "Use the Pomodoro technique — focus for 25 minutes, then take a 5-minute break",
+          "You can customise your focus and break durations in your profile settings",
+          "Your streak and stats page track your focus sessions",
+        ]}
+      />
       <div className="max-w-2xl mx-auto space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -151,6 +163,20 @@ export default function FocusPage() {
           <h1 className="text-2xl font-bold text-slate-100">Focus Timer</h1>
           <div className="w-16" />
         </div>
+
+        {/* Ask AI Button - Only show during focusing sessions */}
+        {timerState === 'focusing' && isRunning && (
+          <button
+            onClick={() => setIsChatOpen(true)}
+            className="fixed bottom-32 right-6 flex items-center gap-2 px-4 py-3 bg-[#136dec] text-white rounded-full shadow-lg hover:bg-[#1058c7] transition-colors active:scale-95 z-40"
+          >
+            <MessageCircle size={18} />
+            <span className="text-sm font-semibold">Ask AI</span>
+          </button>
+        )}
+
+        {/* Focus Chat Modal */}
+        <FocusChat isOpen={isChatOpen} onClose={() => setIsChatOpen(false)} />
 
         {/* Session Counter */}
         <div className="text-center space-y-2">

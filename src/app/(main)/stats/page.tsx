@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useUser } from '@/context/UserContext'
 import { useCalendar } from '@/context/CalendarContext'
+import { FirstTimeGuide } from '@/components/FirstTimeGuide'
 import { ChevronLeft, Flame, Clock, Calendar, Heart, Pill } from 'lucide-react'
 import { getTodayDate } from '@/lib/utils'
 
@@ -75,6 +76,15 @@ export default function StatsPage() {
 
   return (
     <div className="min-h-full bg-[#0b1219] px-4 pt-6 pb-28">
+      <FirstTimeGuide
+        pageKey="stats"
+        title="How you're doing"
+        tips={[
+          "See your streak, focus sessions, and upcoming events at a glance",
+          "This page is about celebrating progress, not pressure",
+          "Keep showing up — that's what matters most",
+        ]}
+      />
       <div className="max-w-2xl mx-auto space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">

@@ -2,6 +2,7 @@
 
 import { useUser } from '@/context/UserContext'
 import { useRouter } from 'next/navigation'
+import { FirstTimeGuide } from '@/components/FirstTimeGuide'
 import { formatTime } from '@/lib/utils'
 import { LogOut, Settings, Zap } from 'lucide-react'
 import Link from 'next/link'
@@ -25,6 +26,15 @@ export default function ProfilePage() {
 
   return (
     <div className="min-h-screen bg-[#0b1219] px-4 pt-6 pb-24">
+      <FirstTimeGuide
+        pageKey="profile"
+        title="Your settings"
+        tips={[
+          "Update your daily routine, medication info, and preferences here",
+          "Adjust your focus and break timer durations",
+          "You can reset your onboarding or sign out at the bottom",
+        ]}
+      />
       <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
         <h1 className="text-3xl font-bold text-slate-100">Profile</h1>
 

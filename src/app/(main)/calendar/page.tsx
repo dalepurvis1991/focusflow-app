@@ -3,6 +3,7 @@
 import { useState } from 'react'
 import { useCalendar } from '@/context/CalendarContext'
 import { EventCard } from '@/components/EventCard'
+import { FirstTimeGuide } from '@/components/FirstTimeGuide'
 import { getTodayDate, getDateFromToday, getDayOfWeek, formatDate } from '@/lib/utils'
 import { Plus, ChevronLeft, ChevronRight } from 'lucide-react'
 import { Event } from '@/types/calendar'
@@ -25,15 +26,23 @@ export default function CalendarPage() {
 
   const weekDates = Array.from({ length: 7 }).map((_, i) => getDateFromToday(i))
 
-  const getDayLabel = (date: string): string => {
-    const offset = selectedDayOffset
-    if (offset === 0) return 'Today'
-    if (offset === 1) return 'Tomorrow'
+  const getDayLabel = (date: string, dayOffset: number): string => {
+    if (dayOffset === 0) return 'Today'
+    if (dayOffset === 1) return 'Tomorrow'
     return getDayOfWeek(date).slice(0, 3)
   }
 
   return (
     <div className="min-h-screen bg-[#0b1219] px-4 pt-6 pb-24">
+      <FirstTimeGuide
+        pageKey="calendar"
+        title="Your schedule"
+        tips={[
+          "Tap the day buttons to see different days, or use the arrows to navigate",
+          "Hit the + button to add new events",
+          "Your AI assistant can also add events for you — just ask",
+        ]}
+      />
       <div className="max-w-2xl mx-auto">
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-slate-100">Calendar</h1>
@@ -78,7 +87,7 @@ export default function CalendarPage() {
                     : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                 }`}
               >
-                {getDayLabel(date)}
+                {getDayLabel(date, index)}
               </button>
             ))}
           </div>
@@ -93,7 +102,7 @@ export default function CalendarPage() {
         ) : (
           <div className="text-center py-12">
             <div className="text-4xl mb-4">✨</div>
-            <p className="text-slate-400 text-lg">No events scheduled for {getDayLabel(selectedDate).toLowerCase()}</p>
+            <p className="text-slate-400 text-lg">No events scheduled for {getDayLabel(selectedDate, selectedDayOffset).toLowerCase()}</p>
             <p className="text-slate-500 text-sm mt-2">Add one to stay organized</p>
           </div>
         )}

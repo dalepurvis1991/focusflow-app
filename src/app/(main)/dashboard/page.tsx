@@ -1,5 +1,6 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { useUser } from '@/context/UserContext'
 import { useCalendar } from '@/context/CalendarContext'
 import { useRouter } from 'next/navigation'
@@ -7,13 +8,33 @@ import { getGreeting, formatTime, getDateFromToday, getTodayDate } from '@/lib/u
 import { EventCard } from '@/components/EventCard'
 import { NudgeCard } from '@/components/NudgeCard'
 import { QuickAction } from '@/components/QuickAction'
+import { FirstTimeGuide } from '@/components/FirstTimeGuide'
 import { MessageCircle, Calendar, Flame } from 'lucide-react'
 import Link from 'next/link'
+
+type NudgeType = { type: 'water' | 'break' | 'movement' | 'breathing'; title: string; description: string }
+
+function getTimeAwareNudge(hour: number): NudgeType {
+  if (hour < 10) {
+    return { type: 'water', title: 'Start your day right', description: 'A glass of water first thing helps your brain wake up and improves focus. ADHD brains especially benefit from staying hydrated.' }
+  } else if (hour < 12) {
+    return { type: 'water', title: 'Mid-morning hydration check', description: "You've been going for a few hours. A quick drink of water can help maintain the focus you've built up this morning." }
+  } else if (hour < 14) {
+    return { type: 'movement', title: 'Lunchtime movement break', description: 'Even a 5-minute walk can reset your focus for the afternoon. Movement helps your brain produce dopamine — exactly what ADHD brains need.' }
+  } else if (hour < 16) {
+    return { type: 'water', title: 'Afternoon energy dip?', description: "The post-lunch slump is real — especially with ADHD. A glass of water and a stretch can help more than you'd think." }
+  } else if (hour < 18) {
+    return { type: 'breathing', title: 'Wind-down approaching', description: "You're in the home stretch. Take 3 deep breaths — it helps your brain transition from work mode to rest mode." }
+  } else {
+    return { type: 'break', title: 'Time to switch off', description: "You've done enough for today. Give yourself permission to stop. Rest is productive — it's how your brain processes everything from the day." }
+  }
+}
 
 export default function DashboardPage() {
   const router = useRouter()
   const { user, streak } = useUser()
   const { getUpcomingEvents } = useCalendar()
+  const [nudgeDismissed, setNudgeDismissed] = useState(false)
 
   const hour = new Date().getHours()
   const greeting = getGreeting(hour)
@@ -31,6 +52,15 @@ export default function DashboardPage() {
 
   return (
     <div className="min-h-full px-4 pt-8 bg-[#0b1219]">
+      <FirstTimeGuide
+        pageKey="dashboard"
+        title="Welcome to your dashboard"
+        tips={[
+          "This is your home base — see your schedule, streak, and quick actions at a glance",
+          "Tap 'Talk to Assistant' to get AI-powered help with your day",
+          "The nudge cards give you gentle reminders to stay healthy and focused",
+        ]}
+      />
       <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">
         <div className="space-y-2">
           <h1 className="text-3xl font-bold text-slate-100">
@@ -78,12 +108,18 @@ export default function DashboardPage() {
           </div>
         )}
 
-        <NudgeCard
-          type="water"
-          title="You might be thirsty"
-          description="You haven't had water in the last 2 hours. A quick sip can help with focus."
-          actionLabel="Thanks!"
-        />
+        {!nudgeDismissed && (() => {
+          const nudge = getTimeAwareNudge(hour)
+          return (
+            <NudgeCard
+              type={nudge.type}
+              title={nudge.title}
+              description={nudge.description}
+              actionLabel="Thanks!"
+              onAction={() => setNudgeDismissed(true)}
+            />
+          )
+        })()}
 
         <div className="space-y-3">
           <h2 className="text-sm font-semibold uppercase tracking-wider px-1 text-slate-400">

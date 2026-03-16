@@ -9,6 +9,7 @@ interface ChatRequest {
   }>
   events: Event[]
   user: User | null
+  focusMode?: boolean
 }
 
 interface ToolResult {
@@ -108,9 +109,75 @@ const tools: Anthropic.Tool[] = [
       required: [],
     },
   },
+  {
+    name: 'web_search',
+    description:
+      'Search the web for real-world information like addresses, phone numbers, opening hours, directions, business information, etc. Use this when users ask questions that require current or specific information not in your training data.',
+    input_schema: {
+      type: 'object' as const,
+      properties: {
+        query: {
+          type: 'string',
+          description:
+            'The search query (e.g., "Dr Smith surgery address", "Hull Royal Infirmary phone number", "nearest GP clinic to Hull")',
+        },
+      },
+      required: ['query'],
+    },
+  },
 ]
 
-function buildSystemPrompt(user: User | null): string {
+async function searchWeb(query: string): Promise<string> {
+  try {
+    const encodedQuery = encodeURIComponent(query)
+    const response = await fetch(
+      `https://api.duckduckgo.com/?q=${encodedQuery}&format=json&no_html=1`,
+      {
+        headers: {
+          'User-Agent': 'FocusFlow-App/1.0',
+        },
+      }
+    )
+
+    if (!response.ok) {
+      return `Search failed with status ${response.status}. I couldn't find information for that query.`
+    }
+
+    const data = (await response.json()) as {
+      AbstractText?: string
+      AbstractURL?: string
+      RelatedTopics?: Array<{ Text?: string; FirstURL?: string }>
+      Results?: Array<{ Text?: string; FirstURL?: string }>
+    }
+
+    // Prioritize AbstractText (instant answer), then RelatedTopics, then Results
+    if (data.AbstractText) {
+      return `${data.AbstractText}${data.AbstractURL ? ` (Source: ${data.AbstractURL})` : ''}`
+    }
+
+    if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+      const results = data.RelatedTopics.slice(0, 3)
+        .map((topic) => `- ${topic.Text}${topic.FirstURL ? ` (${topic.FirstURL})` : ''}`)
+        .join('\n')
+      return `Here are some relevant results:\n${results}`
+    }
+
+    if (data.Results && data.Results.length > 0) {
+      const results = data.Results.slice(0, 3)
+        .map((result) => `- ${result.Text}${result.FirstURL ? ` (${result.FirstURL})` : ''}`)
+        .join('\n')
+      return `Here are some relevant results:\n${results}`
+    }
+
+    return `I couldn't find specific information for "${query}". Try rephrasing your search with more specific details.`
+  } catch (error) {
+    const errorMsg = error instanceof Error ? error.message : 'Unknown error'
+    console.error('Web search error:', errorMsg)
+    return `I encountered an error while searching: ${errorMsg}. Please try again.`
+  }
+}
+
+function buildSystemPrompt(user: User | null, focusMode: boolean = false): string {
   const userName = user?.onboarding?.name || user?.name || 'there'
   const wakeTime = user?.onboarding?.wakeTime || '7:00 AM'
   const workStart = user?.onboarding?.workStartTime || '9:00 AM'
@@ -119,7 +186,7 @@ function buildSystemPrompt(user: User | null): string {
     ? `The user takes ${user.onboarding.medsName || 'ADHD medication'} at ${user.onboarding.medsTime || '8:00 AM'}.`
     : 'The user does not take ADHD medication.'
 
-  return `You are FocusFlow Coach, a warm, supportive AI assistant designed to help people with ADHD manage their time, tasks, and well-being. You have access to the user's calendar and can create events, set reminders, and provide coaching.
+  return `You are FocusFlow Coach, a warm, supportive AI assistant designed to help people with ADHD manage their time, tasks, and well-being. You have access to the user's calendar, can create events, set reminders, and search the web for real-world information.
 
 About the user:
 - Name: ${userName}
@@ -139,22 +206,30 @@ When the user asks you to:
 - "Set a reminder" → Use set_reminder to create the reminder
 - "What's on my calendar?" → Use get_events to check their actual calendar
 - "Do it", "Set that up", "Add it" → Take action with the appropriate tool
+- "What's the address of..." / "Phone number of..." / "Opening hours..." / "Find me a..." → Use web_search to look up current information
 
 Always:
 1. If the user mentions a specific date/time, use it. If they say "tomorrow", calculate the actual date.
 2. Confirm actions before executing them when the intent is clear.
 3. After creating events or reminders, give a brief confirmation.
 4. If something is unclear, ask clarifying questions.
-5. Provide emotional support for ADHD struggles while also being practical.
+5. For information queries about addresses, phone numbers, hours, directions, or local services, use web_search to provide accurate current information.
+6. Provide emotional support for ADHD struggles while also being practical.
 
-Today's date for reference: ${new Date().toISOString().split('T')[0]}`
+Today's date for reference: ${new Date().toISOString().split('T')[0]}
+
+${
+  focusMode
+    ? `\nFOCUS MODE: The user is currently in an active focus session. Keep all responses very brief and action-oriented. Get them quick answers and let them get back to their task. Use 1-3 sentences max. Be direct and concise.`
+    : ''
+}`
 }
 
-function processTool(
+async function processTool(
   toolName: string,
   toolInput: Record<string, unknown>,
   events: Event[]
-): string {
+): Promise<string> {
   switch (toolName) {
     case 'get_events': {
       const date = toolInput.date as string
@@ -204,6 +279,16 @@ function processTool(
       })
     }
 
+    case 'web_search': {
+      const query = toolInput.query as string
+      const searchResult = await searchWeb(query)
+      return JSON.stringify({
+        success: true,
+        query,
+        result: searchResult,
+      })
+    }
+
     default:
       return JSON.stringify({ error: `Unknown tool: ${toolName}` })
   }
@@ -211,9 +296,9 @@ function processTool(
 
 export async function POST(req: Request) {
   try {
-    const { messages, events, user } = (await req.json()) as ChatRequest
+    const { messages, events, user, focusMode } = (await req.json()) as ChatRequest
 
-    const systemPrompt = buildSystemPrompt(user)
+    const systemPrompt = buildSystemPrompt(user, focusMode)
 
     let conversationMessages: Anthropic.MessageParam[] = messages.map((msg) => ({
       role: msg.role,
@@ -236,7 +321,7 @@ export async function POST(req: Request) {
 
       if (!toolUseBlock) break
 
-      const toolResult = processTool(
+      const toolResult = await processTool(
         toolUseBlock.name,
         toolUseBlock.input as Record<string, unknown>,
         events
