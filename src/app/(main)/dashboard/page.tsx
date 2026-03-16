@@ -103,13 +103,13 @@ export default function DashboardPage() {
             <QuickAction
               icon="📊"
               label="How am I doing?"
-              onClick={() => {}}
+              onClick={() => router.push('/stats')}
               variant="secondary"
             />
             <QuickAction
               icon="🎯"
               label="Start Focus"
-              onClick={() => {}}
+              onClick={() => router.push('/focus')}
               variant="secondary"
             />
           </div>

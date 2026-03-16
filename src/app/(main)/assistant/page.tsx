@@ -5,44 +5,16 @@ import { ChatBubble } from '@/components/ChatBubble'
 import { Send, Mic } from 'lucide-react'
 import { generateId } from '@/lib/utils'
 import { Message } from '@/types/assistant'
+import { useCalendar } from '@/context/CalendarContext'
+import { useUser } from '@/context/UserContext'
 
 interface ChatMessage extends Message {
   id: string
 }
 
-const MOCK_RESPONSES: Record<string, string> = {
-  appointment: "Got it! What time is your appointment? I'll add it to your calendar and set a reminder.",
-  tired: "That's totally valid. ADHD brains can be exhausting. Want to talk through what's going on? Or maybe it's time for a break?",
-  forget: "I know that feeling. Let's write it down right now so you don't lose it. What do you need to remember?",
-  anxious: "Hey, I hear you. Anxiety and ADHD often go hand-in-hand. Want to talk about what's worrying you, or would a grounding technique help?",
-  focus: "Let's work on your focus. Want to try a pomodoro session? I can set a timer for 25 minutes and remind you to take a break.",
-  reminder: "Sure, I can help with that. What do you want to remember, and when?",
-  default: "I hear you. Tell me more about what you're thinking. What would help right now?",
-}
-
-function getMockResponse(input: string): string {
-  const lower = input.toLowerCase()
-
-  if (lower.includes('doctor') || lower.includes('appointment')) {
-    return MOCK_RESPONSES.appointment
-  }
-  if (lower.includes('tired') || lower.includes('exhausted')) {
-    return MOCK_RESPONSES.tired
-  }
-  if (lower.includes('forget') || lower.includes('remember')) {
-    return MOCK_RESPONSES.reminder
-  }
-  if (lower.includes('anxious') || lower.includes('anxiety')) {
-    return MOCK_RESPONSES.anxious
-  }
-  if (lower.includes('focus') || lower.includes('concentrate')) {
-    return MOCK_RESPONSES.focus
-  }
-
-  return MOCK_RESPONSES.default
-}
-
 export default function AssistantPage() {
+  const { events } = useCalendar()
+  const { user } = useUser()
   const [messages, setMessages] = useState<ChatMessage[]>([
     {
       id: generateId(),
@@ -56,6 +28,7 @@ export default function AssistantPage() {
 
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const messagesEndRef = useRef<HTMLDivElement>(null)
 
   const scrollToBottom = () => {
@@ -80,19 +53,64 @@ export default function AssistantPage() {
     setMessages((prev) => [...prev, userMessage])
     setInput('')
     setIsLoading(true)
+    setError(null)
 
-    await new Promise((resolve) => setTimeout(resolve, 500 + Math.random() * 1000))
+    try {
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: messages
+            .filter((m) => m.role === 'user' || m.role === 'assistant')
+            .map((m) => ({
+              role: m.role,
+              content: m.content,
+            }))
+            .concat([
+              {
+                role: 'user',
+                content: text,
+              },
+            ]),
+          events,
+          user,
+        }),
+      })
 
-    const assistantResponse: ChatMessage = {
-      id: generateId(),
-      conversationId: 'main',
-      role: 'assistant',
-      content: getMockResponse(text),
-      timestamp: Date.now(),
+      if (!response.ok) {
+        const errorData = await response.json()
+        throw new Error(errorData.details || 'Failed to get response from assistant')
+      }
+
+      const data = await response.json()
+
+      const assistantResponse: ChatMessage = {
+        id: generateId(),
+        conversationId: 'main',
+        role: 'assistant',
+        content: data.content,
+        timestamp: Date.now(),
+      }
+
+      setMessages((prev) => [...prev, assistantResponse])
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'An error occurred'
+      setError(errorMessage)
+      console.error('Chat error:', err)
+
+      const errorResponse: ChatMessage = {
+        id: generateId(),
+        conversationId: 'main',
+        role: 'assistant',
+        content: `Sorry, I encountered an error: ${errorMessage}. Please try again.`,
+        timestamp: Date.now(),
+      }
+      setMessages((prev) => [...prev, errorResponse])
+    } finally {
+      setIsLoading(false)
     }
-
-    setMessages((prev) => [...prev, assistantResponse])
-    setIsLoading(false)
   }
 
   return (
@@ -103,6 +121,12 @@ export default function AssistantPage() {
       </div>
 
       <div className="flex-1 overflow-y-auto p-4 space-y-4">
+        {error && (
+          <div className="bg-red-900/20 border border-red-700 text-red-200 px-4 py-3 rounded-lg text-sm">
+            {error}
+          </div>
+        )}
+
         {messages.map((message) => (
           <ChatBubble
             key={message.id}
