@@ -89,16 +89,9 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
     setMounted(true)
   }, [])
 
-  // Save conversations to localStorage
-  const saveConversations = (newConversations: Conversation[]) => {
-    setConversations(newConversations)
-    localStorage.setItem(STORAGE_KEY_CONVERSATIONS, JSON.stringify(newConversations))
-  }
-
-  // Save memory to localStorage
-  const saveMemory = (newMemory: string) => {
-    setUserMemoryState(newMemory)
-    localStorage.setItem(STORAGE_KEY_MEMORY, newMemory)
+  // Save to localStorage helper
+  const persistConversations = (convs: Conversation[]) => {
+    localStorage.setItem(STORAGE_KEY_CONVERSATIONS, JSON.stringify(convs))
   }
 
   const createConversation = (personality: Personality = 'coach'): string => {
@@ -120,8 +113,11 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
       updatedAt: Date.now(),
     }
 
-    const updated = [newConversation, ...conversations]
-    saveConversations(updated)
+    setConversations(prev => {
+      const updated = [newConversation, ...prev]
+      persistConversations(updated)
+      return updated
+    })
     setActiveConversationIdState(newId)
     localStorage.setItem(STORAGE_KEY_ACTIVE, newId)
 
@@ -129,19 +125,23 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }
 
   const deleteConversation = (id: string) => {
-    const updated = conversations.filter(c => c.id !== id)
-    saveConversations(updated)
+    setConversations(prev => {
+      const updated = prev.filter(c => c.id !== id)
+      persistConversations(updated)
 
-    // If we deleted the active conversation, switch to another
-    if (activeConversationId === id) {
-      const nextId = updated.length > 0 ? updated[0].id : null
-      setActiveConversationIdState(nextId)
-      if (nextId) {
-        localStorage.setItem(STORAGE_KEY_ACTIVE, nextId)
-      } else {
-        localStorage.removeItem(STORAGE_KEY_ACTIVE)
+      // If we deleted the active conversation, switch to another
+      if (activeConversationId === id) {
+        const nextId = updated.length > 0 ? updated[0].id : null
+        setActiveConversationIdState(nextId)
+        if (nextId) {
+          localStorage.setItem(STORAGE_KEY_ACTIVE, nextId)
+        } else {
+          localStorage.removeItem(STORAGE_KEY_ACTIVE)
+        }
       }
-    }
+
+      return updated
+    })
   }
 
   const getConversation = (id: string): Conversation | undefined => {
@@ -156,32 +156,39 @@ export function ChatProvider({ children }: { children: React.ReactNode }) {
   }
 
   const renameConversation = (id: string, title: string) => {
-    const updated = conversations.map(c =>
-      c.id === id ? { ...c, title, updatedAt: Date.now() } : c
-    )
-    saveConversations(updated)
+    setConversations(prev => {
+      const updated = prev.map(c =>
+        c.id === id ? { ...c, title, updatedAt: Date.now() } : c
+      )
+      persistConversations(updated)
+      return updated
+    })
   }
 
   const addMessage = (conversationId: string, message: Message) => {
-    const updated = conversations.map(c => {
-      if (c.id === conversationId) {
-        return {
-          ...c,
-          messages: [...c.messages, { ...message, conversationId }],
-          updatedAt: Date.now(),
+    setConversations(prev => {
+      const updated = prev.map(c => {
+        if (c.id === conversationId) {
+          return {
+            ...c,
+            messages: [...c.messages, { ...message, conversationId }],
+            updatedAt: Date.now(),
+          }
         }
-      }
-      return c
+        return c
+      })
+      const sorted = updated.sort((a, b) => b.updatedAt - a.updatedAt)
+      persistConversations(sorted)
+      return sorted
     })
-
-    // Re-sort by updatedAt
-    const sorted = updated.sort((a, b) => b.updatedAt - a.updatedAt)
-    saveConversations(sorted)
   }
 
   const updateMemory = (newFact: string) => {
-    const updated = userMemory ? `${userMemory}\n- ${newFact}` : `- ${newFact}`
-    saveMemory(updated)
+    setUserMemoryState(prev => {
+      const updated = prev ? `${prev}\n- ${newFact}` : `- ${newFact}`
+      localStorage.setItem(STORAGE_KEY_MEMORY, updated)
+      return updated
+    })
   }
 
   const contextValue: ChatContextType = {

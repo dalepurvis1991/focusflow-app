@@ -332,6 +332,9 @@ export async function POST(req: Request) {
       content: msg.content,
     }))
 
+    // Collect all tool actions so the frontend can execute them
+    const actions: Array<{ tool: string; data: Record<string, unknown> }> = []
+
     let response = await client.messages.create({
       model: 'claude-haiku-4-5-20251001',
       max_tokens: 1024,
@@ -353,6 +356,20 @@ export async function POST(req: Request) {
         toolUseBlock.input as Record<string, unknown>,
         events
       )
+
+      // Parse tool result and collect actions for frontend
+      try {
+        const parsed = JSON.parse(toolResult)
+        if (parsed.success) {
+          if (toolUseBlock.name === 'create_event' && parsed.event) {
+            actions.push({ tool: 'create_event', data: parsed.event })
+          } else if (toolUseBlock.name === 'set_reminder' && parsed.reminder) {
+            actions.push({ tool: 'set_reminder', data: parsed.reminder })
+          }
+        }
+      } catch {
+        // Non-JSON tool results (e.g., get_events) don't need frontend actions
+      }
 
       // Add assistant's response with tool use
       conversationMessages = [
@@ -395,10 +412,8 @@ export async function POST(req: Request) {
     const finalResponse = textBlock?.text || 'I apologize, I could not generate a response.'
 
     // Check if Claude learned something new about the user that should be added to memory
-    // Look for markers in the response that indicate new insights
     let memoryUpdate: string | undefined
     if (finalResponse.toLowerCase().includes('note to self:') || finalResponse.toLowerCase().includes('i learned:')) {
-      // If Claude explicitly noted something, extract it
       const noteMatch = finalResponse.match(/(?:note to self:|i learned:)\s*(.+?)(?:\.|$)/i)
       if (noteMatch) {
         memoryUpdate = noteMatch[1].trim()
@@ -410,6 +425,7 @@ export async function POST(req: Request) {
         role: 'assistant',
         content: finalResponse,
         memoryUpdate,
+        actions: actions.length > 0 ? actions : undefined,
       }),
       {
         headers: {

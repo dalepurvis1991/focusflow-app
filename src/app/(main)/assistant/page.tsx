@@ -10,10 +10,16 @@ import { useCalendar } from '@/context/CalendarContext'
 import { useUser } from '@/context/UserContext'
 import { useChat } from '@/context/ChatContext'
 
+interface ChatAction {
+  tool: string
+  data: Record<string, unknown>
+}
+
 interface ChatResponse {
   role: string
   content: string
   memoryUpdate?: string
+  actions?: ChatAction[]
 }
 
 const PERSONALITY_OPTIONS: { value: Personality; label: string; description: string }[] = [
@@ -24,7 +30,7 @@ const PERSONALITY_OPTIONS: { value: Personality; label: string; description: str
 ]
 
 export default function AssistantPage() {
-  const { events } = useCalendar()
+  const { events, addEvent } = useCalendar()
   const { user } = useUser()
   const {
     conversations,
@@ -105,10 +111,14 @@ export default function AssistantPage() {
       timestamp: Date.now(),
     }
 
+    // Check if this is the first user message BEFORE adding it
+    const isFirstUserMessage = activeConversation.title === 'New Chat' &&
+      activeConversation.messages.filter(m => m.role === 'user').length === 0
+
     addMessage(activeConversation.id, userMessage)
 
-    // Auto-title after first message if still "New Chat"
-    if (activeConversation.title === 'New Chat' && activeConversation.messages.length === 1) {
+    // Auto-title after first user message
+    if (isFirstUserMessage) {
       const title = text.length > 30 ? text.substring(0, 30) + '...' : text
       renameConversation(activeConversation.id, title)
     }
@@ -163,6 +173,16 @@ export default function AssistantPage() {
       }
 
       addMessage(activeConversation.id, assistantMessage)
+
+      // Execute any tool actions returned by the API
+      if (data.actions && data.actions.length > 0) {
+        for (const action of data.actions) {
+          if (action.tool === 'create_event' && action.data) {
+            addEvent(action.data as unknown as import('@/types/calendar').Event)
+          }
+          // set_reminder actions can be handled here when reminder system is built
+        }
+      }
 
       // Update memory if Claude learned something new
       if (data.memoryUpdate) {
