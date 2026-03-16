@@ -23,6 +23,9 @@ export default function DashboardPage() {
     .filter((e) => e.date === todayDate)
     .slice(0, 3)
 
+  // AuthGuard in layout guarantees user and onboarding exist
+  if (!user?.onboarding) return null
+
   const nextEvent = upcomingEvents[0]
   const nextEventTime = nextEvent ? formatTime(nextEvent.startTime) : null
 
